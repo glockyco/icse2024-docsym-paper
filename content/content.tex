@@ -1,0 +1,114 @@
+\section{Motivation}
+
+Developers spend a lot of time debugging.
+%
+In fact, developers self-report that 20-60\% of their time is spent on debugging tasks~\cite{beller_2018_dichotomy}.
+%
+A recent observational study of developers showed similar results, finding that debugging constitutes an average of 48\% of total development time~\cite{alaboudi_2021_debugging_episodes}.
+%
+Furthermore, debugging not only takes place during dedicated bug fixing sessions but also takes up 40\% of developer time during programming sessions dedicated to the implementation of new features~\cite{alaboudi_2021_debugging_episodes}.
+%
+These findings suggest that reducing the time required to perform debugging tasks promises significant cost savings and would free up developer resources for other purposes.
+
+%%%
+
+Various approaches have been developed throughout the years that aim to support developers during debugging by helping them more quickly understand and deal with source code changes that cause unexpected --- and perhaps unintended --- changes in program behavior.
+%
+For example, equivalence checking informs developers whether the input-output behavior of a program has changed across versions~\cite{person_2008_dse}, fault localization reports lines of code that might be the cause of unintended behaviors~\cite{wong_2016_survey}, and automated program repair aims to automatically fix programs that are crashing or otherwise failing tests after a modification has taken place \cite{legoues_2019_apr,monperrus_2018_bibliography}.
+
+%%%
+
+While the effectiveness and runtime performance of such approaches have seen continuous improvements throughout the years, developers criticize that existing tools do not provide enough context information to be useful to them~\cite{kochhar_2016_practitioners,parnin_2011_debugging_help}.
+%
+For example, equivalence checking tools generally only output whether two programs are non-/equivalent~\cite{badihi_2020_ardiff,jakobs_2021_peqcheck}, fault localization tools only provide line numbers of potentially fault-inducing lines of code~\cite{wong_2016_survey}, and program repair tools only output patches that fix identified crashes or test failures~\cite{mechtaev_2016_angelix,jifeng_2017_nopol}.
+%
+However, neither approaches provide any further evidence or explanations to support their results, which commonly causes developers to disregard the provided outputs because they feel like they cannot understand or trust them~\cite{noller_2022_trust_issues,parnin_2011_debugging_help,winter_2023_developers_feel}.
+
+\section{Problem Statement}
+
+Based on the findings presented above, we hypothesize that developers' understanding of program changes and trust of corresponding tool outputs can be improved if these outputs are enriched with additional context information and result explanations. 
+%
+More specifically, our goal is to develop a new equivalence checking approach that (i) is at least as accurate as existing approaches but (ii) provides more detailed descriptions of identified behavioral / semantic differences and (iii) presents these results in a way that is useful for developers, thus aiding developers' change understanding.
+%
+Toward this goal, we aim to answer the following research questions:
+
+\begin{itemize}
+    \item[\textbf{RQ1}] How can we exploit symbolic execution to create an equivalence checking approach that is at least as accurate as existing approaches while providing more detailed context information and result explanations?
+    \item[\textbf{RQ2}] How should the collected information about software changes (i.e., equivalence checking results, context information, result explanations) be presented to developers in order to be most useful for them?
+    \item[\textbf{RQ3}] To which degree does the provided information affect the speed, reliability, etc.\ with which developers are able to reason about software changes?
+\end{itemize}
+
+In the remaining sections, we describe our research approach including preliminary results and finish with expected contributions.
+
+\section{Research Approach}
+
+To answer the stated research questions, we split the corresponding research work into five work packages (WP1--WP5): two for RQ1, two for RQ2, and one for RQ3. These work packages are as follows.
+
+\subsection{Developing and Evaluating the Semantic Differencing Approach (RQ1)}
+
+\textbf{Semantic Differencing (WP1)}:
+%
+The goal of this work package was to develop an approach for the computation of equivalence checking results and any additional information that is required to explain these results to developers.
+%
+The approach that we have developed for this primarily relies on symbolic execution~\cite{king_1976_symbolic} which has proven to be applicable to a wide range of software analysis tasks~\cite{baldoni_2018_survey}.
+%
+Desirable properties of symbolic execution include its ability to provide summaries of program behavior which can serve as the basis of result explanations, and its underapproximation of program behavior which avoids false-positive results that are often a source of developer frustration~\cite{parnin_2011_debugging_help,person_2008_dse}. 
+%
+The prototype implementation of our approach is publicly available on GitHub\footnote{https://github.com/glockyco/PASDA}.
+
+\textbf{Benchmarking (WP2)}: 
+%
+In this work package, we evaluated the effectiveness and efficiency of the equivalence checking / semantic differencing approach developed in WP1.
+%
+To ensure an unbiased evaluation of our approach, we applied it to the ARDiff~\cite{badihi_2020_ardiff} benchmark to compare its runtime performance and the correctness of the reported equivalence checking results to three state-of-the-art equivalence checking approaches: ARDiff~\cite{badihi_2020_ardiff}, DSE~\cite{person_2008_dse}, and PRV~\cite{boehme_2013_prv}.
+%
+The results of this evaluation, which are currently undergoing peer review, demonstrate that our approach correctly classifies more cases in the ARDiff benchmark than the three existing approaches, albeit at the cost of moderate runtime increases.
+%
+A preprint of our results is available on arXiv~\cite{glock_2023_pasda_preprint} and a replication package that contains all evaluation scripts as well as the raw and processed evaluation data is available on Zenodo~\cite{glock_2023_replicationpackage}.
+
+\subsection{Developing Appropriate Visualizations of the Semantic Differencing Data (RQ2)}
+
+\textbf{Data Visualization (WP3)}: 
+%
+Existing studies have shown that source code analysis results are most useful to developers when presented inside of developers' IDEs~\cite{alaboudi_2021_edit,layman_2013_debugging}.
+%
+Consequently, the goal of this work package is to develop an IDE plugin for a commonly used IDE such as IntelliJ\footnote{https://www.jetbrains.com/idea/} or VS Code\footnote{https://code.visualstudio.com/} that presents the data computed by our approach in a way that is appropriate for developers.
+%
+Initial representations of the data will be based on the findings of existing user studies in related domains such as general program understanding~\cite{hoffswell_2018_augmenting,sulir_2018_visual_augmentation} as well as our own experiences and intuitions as developers.
+%
+The representations will later be refined using developer feedback from the pilot study conducted in WP4.
+
+\textbf{Pilot Study (WP4)}: 
+%
+The goal of WP4 is to conduct a pilot study with around 5 developers to collect initial feedback for the IDE plugin developed in WP3.
+%
+For each study participant, we will provide a demonstration of our plugin's features, have them complete a series of change understanding tasks with our plugin while thinking aloud \cite{someren_1994_think_aloud}, and then gather more in-depth feedback through a semi-structured interview \cite{adams_2015_conducting}.
+%
+Observations from the change understanding tasks as well as suggestions and criticism from the interview sessions will be used to improve our first IDE plugin prototype, thus making it more useful for a larger range of developers. Task completion data, interview guides, etc. will be made publicly available to the research community.
+    
+\subsection{Evaluating the Usefulness of the Semantic Differencing Data (RQ3)}
+
+\textbf{User Study (WP5)}: 
+%
+To evaluate the usefulness of the improved prototype created in WP4, we plan to conduct a user study with 20-30 developers.
+%
+User study sessions will follow a similar structure as in the pilot study, consisting of a tool demonstration followed by the completion of change understanding tasks and a concluding interview.
+%
+However, for the change understanding tasks, we will ask developers to not only use our own tool, but to also complete some tasks with an existing tool for source code differencing such as git-diff\footnote{https://git-scm.com/docs/git-diff}, IJM~\cite{frick_2018_ijm}, GumTree~\cite{falleri_2014_gumtree}, or ChangeDistiller~\cite{gall_2009_changedistiller}.
+%
+By following this approach, we will be able to compare our tool to the state-of-the-art both quantitatively (via task completion times, accuracy, etc.) as well as qualitatively (via interview feedback).
+
+\section{Expected Contributions}
+
+In our research, we will adhere to open science principles. As mentioned throughout the previous sections, we therefore plan to make all created research prototypes, interview guides, raw and processed data, etc. publicly available. In particular, we expect to make the following contributions throughout our research work:
+    
+\begin{itemize}
+    \item[\textbf{C1}] an \textbf{approach} for equivalence checking of software programs that provides more information about behavioral / semantic differences than existing approaches (WP1),
+    \item[\textbf{C2}] an open source \textbf{prototype} that implements the computation of the raw semantic differencing data as a standalone Java application (WP1).
+    \item[\textbf{C3}] an open source \textbf{prototype} that implements the processing and visualization of the semantic differencing data as an IDE plugin (WP3),
+    \item[\textbf{C4}] \textbf{benchmarking results} that compare the runtime requirements and accuracy of our approach to state-of-the-art equivalence checking approaches (WP2),
+    \item[\textbf{C5}] \textbf{experimental results} that compare how quickly and accurately developers are able to complete change understanding tasks when using our IDE prototype vs.\ (prototypes of) state-of-the-art tools (WP4 + WP5),
+    \item[\textbf{C6}] \textbf{developer feedback} that compares the perceived usefulness of our IDE prototype to (prototypes of) state-of-the-art tools (WP4 + WP5).
+\end{itemize}
+
+Through these contributions, we expect to provide reproducible evidence for (or against) our hypothesis that developers' understanding of program changes as well as trust in equivalence checking outputs can be improved if this information is enriched with additional context information and result explanations.
