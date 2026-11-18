@@ -1,12 +1,28 @@
-Paper for the ICSE 2024 Doctoral Symposium:  
-[Aiding Developer Understanding of Software Changes via Symbolic Execution-based Semantic Differencing](https://conf.researchr.org/details/icse-2024/icse-2024-doctoral-symposium/3/Aiding-Developer-Understanding-of-Software-Changes-via-Symbolic-Execution-based-Seman)
+# Aiding Developer Understanding of Software Changes via Symbolic Execution-based Semantic Differencing
 
-The LaTeX sources of the corresponding poster can be found here:  
-[ICSE 2024 Doctoral Symposium Poster](https://github.com/glockyco/icse2024-docsym-poster)
+LaTeX sources of Johann Glock's paper at the ICSE 2024 Doctoral Symposium ([doi:10.1145/3639478.3639783](https://doi.org/10.1145/3639478.3639783)). The paper, the slides of the talk and the poster are on [glockyco.com](https://glockyco.com/research/icse-2024-doctoral-symposium/).
 
-For the PDF version of the paper see:  
-[main.pdf](main.pdf)
+[main.pdf](main.pdf) is the built paper.
 
-![Paper - Page 1](page-1.png)
-![Paper - Page 2](page-2.png)
-![Paper - Page 3](page-3.png)
+![First page of the paper](page-1.png)
+
+## Build
+
+You need a LaTeX distribution with `latexmk`:
+
+```sh
+latexmk -pdf main.tex
+```
+
+The repository bundles the `acmart` class the paper was submitted with, which a current TeX Live rejects. Delete `acmart.cls` to build with the installed class instead.
+
+The text is in `content/`, and `content/sources.bib` holds the references.
+
+## Related
+
+- [The poster's LaTeX sources](https://github.com/glockyco/icse2024-docsym-poster)
+- [PASDA](https://glockyco.com/research/pasda/), the tool behind the preliminary results
+
+## License
+
+The text of the paper is licensed under [CC BY 4.0](LICENSE). The `acmart` class and its bibliography styles keep their own license.
